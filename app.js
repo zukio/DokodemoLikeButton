@@ -147,7 +147,7 @@ const MESH_BUTTONS = [];
 const getMeshButtonIndex = (deviceName) => {
   return MESH_BUTTONS.findIndex(({peripheral}) => peripheral.localName === deviceName);
 }
-const instantiateMeshButton = async(peripheral, obnizId) => {
+const instantiateMeshButton = async(peripheral, obniz) => {
   // Create an instance
   const buttonBlock = new MESH_100BU(peripheral);
 
@@ -159,7 +159,7 @@ const instantiateMeshButton = async(peripheral, obnizId) => {
     "deviceId": peripheral.localName,
     "timeConnectedAt": peripheral.connected_at
   }
-  const kintoneRecordId = Config.kintone.recordIdList.find((item)=>item.key==obnizId);
+  const kintoneRecordId = Config.kintone.recordIdList.find((item)=>item.key==obniz.id);
   console.log(`connected: ${peripheral.localName}`, kintoneRecordId);
   
   // Single Pressed Event
@@ -184,18 +184,20 @@ const instantiateMeshButton = async(peripheral, obnizId) => {
   });
 
   buttonBlock.ondisconnect =(()=>{
-    console.log('disconnect', peripheral.localName, obnizId);
+    console.log('disconnect', peripheral.localName, obniz.id);
     removeMeshButton(kintoneRecordId.value, buttonBlockInfo);
   })
 
   return buttonBlock;
 }
-const registMeshButton = async(peripheral, obnizId) => {
-  console.log('found', peripheral.localName, obnizId);
+const registMeshButton = async(peripheral, obniz) => {
+  console.log('found', peripheral.localName, obniz.id);
   // 新規MESHボタンなら
   if(getMeshButtonIndex(peripheral.localName) < 0){
+    obniz.display.clear();
+    obniz.display.print('connect '+peripheral.localName);
     // 追加
-    MESH_BUTTONS.push(await instantiateMeshButton(peripheral, obnizId));
+    MESH_BUTTONS.push(await instantiateMeshButton(peripheral, obniz));
   }
 }
 const removeMeshButton = async(recordId, buttonBlockInfo) =>{
@@ -249,7 +251,7 @@ const setup = async function(){
         // MESHボタンが見つかればスキャンをロック
         connectingLock.push(true);
         // MESHボタンが見つかれば登録
-        await registMeshButton(peripheral, obniz.id);
+        await registMeshButton(peripheral, obniz);
         // 処理完了後にスキャンロックを解除
         connectingLock.splice(connectingLock.length-1, 1);
 
@@ -279,8 +281,8 @@ const setup = async function(){
       await obniz.ble.scan.startWait();
     }
 
-    // 通信が切れてもその状態を維持する
-    obniz.resetOnDisconnect(false);
+    // 【検証中】通信が切れてもその状態を維持する
+    //obniz.resetOnDisconnect(false);
   
     obniz.onloop = async function(){
       // called repeatedly
