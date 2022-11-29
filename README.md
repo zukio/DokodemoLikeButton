@@ -4,13 +4,15 @@
 
 ## npm install
 
-``` npm install ```
+``` 
+npm install 
+```
 
  
 ## create kintone App
 
-Like this:
-{ 
+```
+{
   gatewayId: { type: 'Text' for obnizId },
   reviews: {
     type: 'Table',
@@ -26,11 +28,13 @@ Like this:
     }
   }
 }
+```
 
  
 
 ## Set .env file
 
+``` 
 API_KINTONE="{yours}"
 URL_KINTONE_BASE="{yours}"
 OBNIZ_IDLIST = '[{ 
@@ -38,9 +42,11 @@ OBNIZ_IDLIST = '[{
   "obnizId":"{yours}", 
   "accessToken": "{your-obniz-accessToken}"
   }, { "recordId": ... }]'
-
+```
  
 
 ## Run node app
 
-``` node app.js ```
+``` 
+node app.js 
+```
