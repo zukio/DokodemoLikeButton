@@ -1,0 +1,19 @@
+{
+  "name": "obniztest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@kintone/rest-api-client": "^3.2.1",
+    "dotenv": "^16.0.3",
+    "obniz": "^3.23.0"
+  },
+  "volta": {
+    "node": "16.18.1"
+  }
+}
